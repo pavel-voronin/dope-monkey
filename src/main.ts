@@ -17,12 +17,15 @@ var body = window.document.body;
 while (body.attributes.length > 0) {
   body.removeAttribute(body.attributes[0].name);
 }
+const oldBody = body.innerHTML;
 body.innerHTML = ``;
 
 // seed the universe
 
 const pinia = createPinia();
-const app = createApp(App);
+const app = createApp(App, {
+  oldBody,
+});
 app.use(pinia);
 app.mount(
   (() => {
