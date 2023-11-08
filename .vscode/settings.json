@@ -1,0 +1,19 @@
+{
+  "cSpell.words": [
+    "demi",
+    "iife",
+    "jsdelivr",
+    "nocheck",
+    "Pavel",
+    "pinia",
+    "tailwindcss",
+    "unimport",
+    "unplugin",
+    "userscript",
+    "vite",
+    "Voronin"
+  ],
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
+}
