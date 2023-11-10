@@ -15,7 +15,7 @@ export default defineConfig({
       userscript: {
         icon: "https://vitejs.dev/logo.svg",
         namespace: "npm/vite-plugin-monkey",
-        match: ["https://www.gwars.io/me.php"],
+        match: ["https://www.gwars.io/*"],
       },
       build: {
         externalGlobals: {

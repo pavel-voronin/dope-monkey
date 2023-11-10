@@ -25,6 +25,7 @@ body.innerHTML = ``;
 const pinia = createPinia();
 const app = createApp(App, {
   oldBody,
+  entryUrl: location,
 });
 app.use(pinia);
 app.mount(
