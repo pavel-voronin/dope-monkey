@@ -1,27 +1,47 @@
+// cSpell:ignore cdiv hpheader pdanavybar
+
 import { storeToRefs } from "pinia";
 import { useAppStore } from "../stores/app.store";
 import { useGameStore } from "../stores/game.store";
-import { useNavigationStore } from "../stores/navigation.store";
-import { usePlayerStore } from "../stores/player.store";
-import { useLocationStore } from "../stores/location.store";
+import { usePlayersStore } from "../stores/players.store";
+import { useLocationsStore } from "../stores/locations.store";
 
 export type ParserInput = {
   dom: Document;
   src: string;
 };
 
+function parseCurrentPlayer({ dom }: ParserInput) {
+  const gameStore = useGameStore();
+  const playersStore = usePlayersStore();
+
+  const selfLink = dom.querySelector<HTMLLinkElement>(
+    "body > div.gw-container > table:nth-child(1) > tbody > tr:nth-child(1) > td.gw-header-col2 > table > tbody > tr > td:nth-child(1) > nobr > a"
+  );
+
+  if (!selfLink) return;
+
+  const match = selfLink.href.match(/(\d+)$/);
+
+  if (!match) return; // todo: change the flow, maybe exceptions?
+
+  const id = parseInt(match[1]);
+  const name = selfLink.textContent!;
+
+  playersStore.upsert(id, { name });
+
+  gameStore.player = playersStore.get(id);
+}
+
 function parseHpSpeed({ src }: ParserInput) {
   const match = src.match(/hp_speed=(\d+\.\d+)/);
 
   if (!match) return;
 
-  const store = usePlayerStore();
-
-  store.hp_speed = parseFloat(match[1]);
+  usePlayersStore().upsertCurrent({ hp_speed: parseFloat(match[1]) });
 }
 
 function parseHpHeader({ dom }: ParserInput) {
-  // cSpell:ignore hpheader
   const hpInfo = dom.getElementById("hpheader")?.textContent;
 
   if (!hpInfo) return;
@@ -30,10 +50,10 @@ function parseHpHeader({ dom }: ParserInput) {
 
   if (!match) return;
 
-  const store = usePlayerStore();
-
-  store.hp = parseFloat(match[1]);
-  store.max_hp = parseFloat(match[2]);
+  usePlayersStore().upsertCurrent({
+    hp: parseFloat(match[1]),
+    max_hp: parseFloat(match[2]),
+  });
 }
 
 function parseTimeAndOnline({ dom }: ParserInput) {
@@ -58,9 +78,9 @@ function parseMoney({ dom }: ParserInput) {
 
   if (!money) return;
 
-  const store = usePlayerStore();
-
-  store.money = parseInt(money.textContent!.replace(/\D/g, ""));
+  usePlayersStore().upsertCurrent({
+    money: parseInt(money.textContent!.replace(/\D/g, "")),
+  });
 }
 
 function parseCustomLinks({ dom }: ParserInput) {
@@ -70,31 +90,10 @@ function parseCustomLinks({ dom }: ParserInput) {
 
   if (!links) return;
 
-  const store = useNavigationStore();
-
   Array.from(links.children).forEach((link) => {
     const { href, textContent } = link as HTMLLinkElement;
-    store.custom.push({ name: textContent!, url: href });
+    useGameStore().customNavigation.push({ name: textContent!, url: href });
   });
-}
-
-function parseSelfNameAndUrl({ dom }: ParserInput) {
-  // cSpell:ignore hpheader
-  const selfLink = dom.querySelector<HTMLLinkElement>(
-    "body > div.gw-container > table:nth-child(1) > tbody > tr:nth-child(1) > td.gw-header-col2 > table > tbody > tr > td:nth-child(1) > nobr > a"
-  );
-
-  if (!selfLink) return;
-
-  const store = usePlayerStore();
-
-  store.name = selfLink.textContent!;
-
-  const match = selfLink.href.match(/(\d+)$/);
-
-  if (!match) return;
-
-  store.id = parseInt(match[1]);
 }
 
 function parsePlayerLocation({ dom }: ParserInput) {
@@ -104,21 +103,23 @@ function parsePlayerLocation({ dom }: ParserInput) {
 
   if (!location) return;
 
-  const store = useLocationStore();
-
   const match = location.href.match(/sx=(\d+)&sy=(\d+)/);
 
   if (!match) return;
 
-  store.current = `${match[1]}-${match[2]}`;
+  useGameStore().location = useLocationsStore().get(
+    parseInt(match[1]),
+    parseInt(match[2])
+  );
 }
 
 export function useParse(src: string) {
   const dom = new DOMParser().parseFromString(src, "text/html");
 
+  parseCurrentPlayer({ dom, src }); // the most important one so far
+
   parseHpHeader({ dom, src });
   parseHpSpeed({ dom, src });
-  parseSelfNameAndUrl({ dom, src });
   parseTimeAndOnline({ dom, src });
   parseMoney({ dom, src });
   parseCustomLinks({ dom, src });

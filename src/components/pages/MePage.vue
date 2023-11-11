@@ -1,79 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { usePlayerStore } from '../../stores/player.store'
 import { useGameStore } from '../../stores/game.store';
-import { useNavigationStore } from '../../stores/navigation.store';
-import { useLocationStore } from '../../stores/location.store';
 import Json from '../../components/Json.vue'
-import { usePlayersStore } from '../../stores/players.store';
-
-const playerStore = usePlayerStore()
-const {
-  id,
-  name,
-  hp,
-  max_hp,
-  money,
-  hp_speed,
-  fightLevel,
-  economicLevel,
-  productionLevel,
-  fightExp,
-  economicExp,
-  productionExp,
-  strength,
-  accuracy,
-  vitality,
-  stamina,
-  pistolLevel,
-  pistolExp,
-  explosivesLevel,
-  explosivesExp,
-  autoLevel,
-  autoExp,
-  heavyLevel,
-  heavyExp,
-  shotgunLevel,
-  shotgunExp,
-  snipeLevel,
-  snipeExp,
-  bonuses
-} = storeToRefs(playerStore)
 
 const gameStore = useGameStore()
-const { time, online } = storeToRefs(gameStore)
-
-const navigationStore = useNavigationStore()
-const { custom } = storeToRefs(navigationStore)
-
-const locationStore = useLocationStore()
-const { current } = storeToRefs(locationStore)
-
-const playersStore = usePlayersStore()
+const { time, online, player, location, customNavigation } = storeToRefs(gameStore)
 </script>
 
 <template>
   "me.php" page
-  <Json title="player" :body="{ id, name, hp, max_hp, hp_speed, money }" />
-  <Json title="levels" :body="{ fightLevel, fightExp, economicLevel, economicExp, productionLevel, productionExp }" />
-  <Json title="weapon levels" :body="{
-    pistolLevel,
-    pistolExp,
-    explosivesLevel,
-    explosivesExp,
-    autoLevel,
-    autoExp,
-    heavyLevel,
-    heavyExp,
-    shotgunLevel,
-    shotgunExp,
-    snipeLevel,
-    snipeExp,
-  }" />
-  <Json title="bonuses" :body="bonuses" />
-  <Json title="stats" :body="{ strength, accuracy, vitality, stamina }" />
-  <Json title="game" :body="{ time, online }" />
-  <Json title="navigation" :body="{ custom }" />
-  <Json title="location" :body="{ current }" />
-  <Json title="players" :body="playersStore.get(playerStore.id) ?? {}" />
+  <Json title="game" :body="{ time, online, player, location, customNavigation }" />
 </template>

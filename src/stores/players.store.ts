@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
+import { useGameStore } from "./game.store";
 
 export type Player = {
   id: number;
@@ -47,18 +48,53 @@ export type Player = {
 };
 
 export const usePlayersStore = defineStore("players", () => {
-  const players = reactive<Record<Player["id"], Partial<Player>>>({});
+  const players = reactive<Record<Player["id"], Player>>({});
 
-  const upsert = (player: Partial<Player> & Pick<Player, "id">) => {
-    if (players[player.id]) {
-      // If the player already exists, update their data
-      Object.assign(players[player.id], player);
+  const upsert = (id: Player["id"], player: Partial<Player>) => {
+    if (players[id]) {
+      Object.assign(players[id], player);
     } else {
-      // If the player doesn't exist, add them to the record
-      players[player.id] = player as Player;
+      players[id] = Object.assign(
+        {
+          id,
+          name: "",
+          hp: 0,
+          max_hp: 0,
+          hp_speed: 0,
+          money: 0,
+          fightLevel: 0,
+          fightExp: 0,
+          economicLevel: 0,
+          economicExp: 0,
+          productionLevel: 0,
+          productionExp: 0,
+          strength: 0,
+          accuracy: 0,
+          vitality: 0,
+          stamina: 0,
+          pistolLevel: 0,
+          pistolExp: 0,
+          explosivesLevel: 0,
+          explosivesExp: 0,
+          autoLevel: 0,
+          autoExp: 0,
+          heavyLevel: 0,
+          heavyExp: 0,
+          shotgunLevel: 0,
+          shotgunExp: 0,
+          snipeLevel: 0,
+          snipeExp: 0,
+          bonuses: [],
+        },
+        player
+      );
     }
   };
+
+  const upsertCurrent = (player: Partial<Player>) =>
+    upsert(useGameStore().player!.id, player);
+
   const get = (id: Player["id"]) => players[id];
 
-  return { upsert, get };
+  return { upsert, upsertCurrent, get };
 });
