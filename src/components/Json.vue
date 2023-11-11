@@ -3,5 +3,5 @@ defineProps<{ title: string, body: object }>()
 </script>
 
 <template>
-    <pre class="border border-slate-600 p-4 text-xs">{{ $props.title }}: {{ $props.body }}</pre>
+    <pre class="p-4 text-xs">{{ $props.title }}: {{ $props.body }}</pre>
 </template>

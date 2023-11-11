@@ -1,4 +1,5 @@
 import { useGameStore } from "../stores/game.store";
+import { useLocationStore } from "../stores/location.store";
 import { useNavigationStore } from "../stores/navigation.store";
 import { usePlayerStore } from "../stores/player.store";
 
@@ -69,6 +70,23 @@ function parseTimeAndOnline({ dom }: Input) {
   store.online = parseInt(match[2]);
 }
 
+function parseLocation({ dom }: Input) {
+  const location = dom.querySelector<HTMLLinkElement>(
+    `#my_main_div > table > tbody > tr > td > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(1) > a`
+  );
+  console.log(location);
+
+  if (!location) return;
+
+  const store = useLocationStore();
+
+  const match = location.href.match(/sx=(\d+)&sy=(\d+)/);
+
+  if (!match) return;
+
+  store.current = `${match[1]}-${match[2]}`;
+}
+
 function parseMoney({ dom }: Input) {
   const money = dom.getElementById("cdiv");
 
@@ -103,4 +121,5 @@ export function useParseMe(src: string) {
   parseTimeAndOnline({ dom, src });
   parseMoney({ dom, src });
   parseCustomLinks({ dom, src });
+  parseLocation({ dom, src });
 }
