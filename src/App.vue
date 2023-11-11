@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useAppStore } from './stores/app.store';
-import MePage from './components/pages/MePage.vue'
+import { onMounted } from 'vue';
+import { useParse } from './composables/useParse';
 
-const props = defineProps<{ oldBody: string, entryUrl: URL }>()
+const props = defineProps<{ src: string, entryUrl: URL }>()
 
 const appStore = useAppStore()
-const { isMePage } = storeToRefs(appStore)
-appStore.oldBody = props.oldBody
 appStore.entryUrl = props.entryUrl
+
+const { currentPage, currentPageProps } = storeToRefs(appStore)
+
+onMounted(() => {
+  useParse(props.src)
+})
 </script>
 
 <template>
   <div class="">
-    <div v-if="isMePage" class="">
-      <MePage :oldBody="$props.oldBody" />
-    </div>
+    <component v-if="currentPage" :is="currentPage" v-bind="currentPageProps" />
     <div v-else class="text-xl">
       I don't know what to do with this page
     </div>

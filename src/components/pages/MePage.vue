@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia'
-import { useParseMe } from '../../composables/useParseMe'
 import { usePlayerStore } from '../../stores/player.store'
 import { useGameStore } from '../../stores/game.store';
 import { useNavigationStore } from '../../stores/navigation.store';
 import { useLocationStore } from '../../stores/location.store';
 import Json from '../../components/Json.vue'
-
-const props = defineProps<{ oldBody: string }>()
+import { usePlayersStore } from '../../stores/players.store';
 
 const playerStore = usePlayerStore()
 const {
@@ -52,9 +49,7 @@ const { custom } = storeToRefs(navigationStore)
 const locationStore = useLocationStore()
 const { current } = storeToRefs(locationStore)
 
-onMounted(() => {
-  useParseMe(props.oldBody)
-})
+const playersStore = usePlayersStore()
 </script>
 
 <template>
@@ -80,4 +75,5 @@ onMounted(() => {
   <Json title="game" :body="{ time, online }" />
   <Json title="navigation" :body="{ custom }" />
   <Json title="location" :body="{ current }" />
+  <Json title="players" :body="playersStore.get(playerStore.id) ?? {}" />
 </template>
