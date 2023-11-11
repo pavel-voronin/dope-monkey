@@ -7,7 +7,17 @@ type Input = {
   src: string;
 };
 
-function parseHpHeader({ dom }: Input) {
+function parseHpSpeed({ src }: Input) {
+  const match = src.match(/hp_speed_h=(\d+\.\d+)/);
+
+  if (!match) return;
+
+  const store = usePlayerStore();
+
+  store.hp_speed = parseFloat(match[1]);
+}
+
+function parseHpHeader({ dom, src }: Input) {
   // cSpell:ignore hpheader
   const hpInfo = dom.getElementById("hpheader")?.textContent;
 
@@ -88,6 +98,7 @@ export function useParseMe(src: string) {
   const dom = new DOMParser().parseFromString(src, "text/html");
 
   parseHpHeader({ dom, src });
+  parseHpSpeed({ dom, src });
   parseSelfNameAndUrl({ dom, src });
   parseTimeAndOnline({ dom, src });
   parseMoney({ dom, src });
