@@ -11,7 +11,37 @@ import Json from '../../components/Json.vue'
 const props = defineProps<{ oldBody: string }>()
 
 const playerStore = usePlayerStore()
-const { id, name, hp, max_hp, money, hp_speed } = storeToRefs(playerStore)
+const {
+  id,
+  name,
+  hp,
+  max_hp,
+  money,
+  hp_speed,
+  fightLevel,
+  economicLevel,
+  productionLevel,
+  fightExp,
+  economicExp,
+  productionExp,
+  strength,
+  accuracy,
+  vitality,
+  stamina,
+  pistolLevel,
+  pistolExp,
+  explosivesLevel,
+  explosivesExp,
+  autoLevel,
+  autoExp,
+  heavyLevel,
+  heavyExp,
+  shotgunLevel,
+  shotgunExp,
+  snipeLevel,
+  snipeExp,
+  bonuses
+} = storeToRefs(playerStore)
 
 const gameStore = useGameStore()
 const { time, online } = storeToRefs(gameStore)
@@ -30,6 +60,23 @@ onMounted(() => {
 <template>
   "me.php" page
   <Json title="player" :body="{ id, name, hp, max_hp, hp_speed, money }" />
+  <Json title="levels" :body="{ fightLevel, fightExp, economicLevel, economicExp, productionLevel, productionExp }" />
+  <Json title="weapon levels" :body="{
+    pistolLevel,
+    pistolExp,
+    explosivesLevel,
+    explosivesExp,
+    autoLevel,
+    autoExp,
+    heavyLevel,
+    heavyExp,
+    shotgunLevel,
+    shotgunExp,
+    snipeLevel,
+    snipeExp,
+  }" />
+  <Json title="bonuses" :body="bonuses" />
+  <Json title="stats" :body="{ strength, accuracy, vitality, stamina }" />
   <Json title="game" :body="{ time, online }" />
   <Json title="navigation" :body="{ custom }" />
   <Json title="location" :body="{ current }" />
