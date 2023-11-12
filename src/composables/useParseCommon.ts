@@ -1,15 +1,9 @@
 // cSpell:ignore cdiv hpheader pdanavybar
 
-import { storeToRefs } from "pinia";
-import { useAppStore } from "../stores/app.store";
 import { useGameStore } from "../stores/game.store";
 import { usePlayersStore } from "../stores/players.store";
 import { useLocationsStore } from "../stores/locations.store";
-
-export type ParserInput = {
-  dom: Document;
-  src: string;
-};
+import { type ParserInput } from "./useRouter";
 
 function parseCurrentPlayer({ dom }: ParserInput) {
   const gameStore = useGameStore();
@@ -113,20 +107,13 @@ function parsePlayerLocation({ dom }: ParserInput) {
   );
 }
 
-export function useParse(src: string) {
-  const dom = new DOMParser().parseFromString(src, "text/html");
+export function useParseCommon(input: ParserInput) {
+  parseCurrentPlayer(input); // the most important one so far
 
-  parseCurrentPlayer({ dom, src }); // the most important one so far
-
-  parseHpHeader({ dom, src });
-  parseHpSpeed({ dom, src });
-  parseTimeAndOnline({ dom, src });
-  parseMoney({ dom, src });
-  parseCustomLinks({ dom, src });
-  parsePlayerLocation({ dom, src });
-
-  const appStore = useAppStore();
-  const { currentPageParser } = storeToRefs(appStore);
-
-  if (currentPageParser.value) currentPageParser.value({ dom, src });
+  parseHpHeader(input);
+  parseHpSpeed(input);
+  parseTimeAndOnline(input);
+  parseMoney(input);
+  parseCustomLinks(input);
+  parsePlayerLocation(input);
 }

@@ -2,23 +2,23 @@
 import { storeToRefs } from 'pinia'
 import { useAppStore } from './stores/app.store';
 import { onMounted } from 'vue';
-import { useParse } from './composables/useParse';
+import { useRouter } from './composables/useRouter';
 
-const props = defineProps<{ src: string, entryUrl: URL }>()
+const props = defineProps<{ src: string, entryUrl: Location }>()
 
 const appStore = useAppStore()
 appStore.entryUrl = props.entryUrl
 
-const { currentPage, currentPageProps } = storeToRefs(appStore)
+const { currentRoute } = storeToRefs(appStore)
 
 onMounted(() => {
-  useParse(props.src)
+  useRouter(appStore.entryUrl as Location, props.src)
 })
 </script>
 
 <template>
-  <div class="">
-    <component v-if="currentPage" :is="currentPage" v-bind="currentPageProps" />
+  <div>
+    <component v-if="currentRoute" :is="currentRoute.component" v-bind="currentRoute.props" />
     <div v-else class="text-xl">
       I don't know what to do with this page
     </div>

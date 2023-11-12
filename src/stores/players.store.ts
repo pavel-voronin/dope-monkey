@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 import { useGameStore } from "./game.store";
 
 export type Player = {

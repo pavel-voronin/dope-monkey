@@ -2,7 +2,8 @@
 
 import { useGameStore } from "../stores/game.store";
 import { usePlayersStore } from "../stores/players.store";
-import type { ParserInput } from "./useParse";
+import { useParseCommon } from "./useParseCommon";
+import { type ParserInput } from "./useRouter";
 
 function parseLevels({ dom }: ParserInput) {
   const fight = dom.querySelector(
@@ -114,9 +115,11 @@ function parseBonuses({ dom }: ParserInput) {
   });
 }
 
-export function useParseMe({ dom, src }: ParserInput) {
-  parseLevels({ dom, src });
-  parseWeaponLevels({ dom, src });
-  parseStats({ dom, src });
-  parseBonuses({ dom, src });
+export function useParseMe(input: ParserInput) {
+  useParseCommon(input);
+
+  parseLevels(input);
+  parseWeaponLevels(input);
+  parseStats(input);
+  parseBonuses(input);
 }
