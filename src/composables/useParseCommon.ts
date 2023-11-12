@@ -84,9 +84,10 @@ function parseCustomLinks({ dom }: ParserInput) {
 
   if (!links) return;
 
-  Array.from(links.children).forEach((link) => {
+  useGameStore().customNavigation = Array.from(links.children).map((link) => {
     const { href, textContent } = link as HTMLLinkElement;
-    useGameStore().customNavigation.push({ name: textContent!, url: href });
+
+    return { name: textContent!, url: href };
   });
 }
 

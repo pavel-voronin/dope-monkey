@@ -107,12 +107,14 @@ function parseBonuses({ dom }: ParserInput) {
 
   if (!bonuses) return;
 
-  Array.from(bonuses.children).forEach((bonus) => {
-    const name = bonus.children[0].textContent!;
-    const level = parseInt(bonus.children[1].textContent!);
+  useGameStore().player!.bonuses = Array.from(bonuses.children).map(
+    (bonus) => {
+      const name = bonus.children[0].textContent!;
+      const level = parseInt(bonus.children[1].textContent!);
 
-    useGameStore().player!.bonuses.push({ name, level });
-  });
+      return { name, level };
+    }
+  );
 }
 
 export function useParseMe(input: ParserInput) {

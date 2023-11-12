@@ -1,10 +1,14 @@
 import { defineStore } from "pinia";
-import { reactive, ref, watch } from "vue";
+import { reactive } from "vue";
 import { useGameStore } from "./game.store";
+import { Location } from "./locations.store";
 
 export type Player = {
   id: number;
   name: string;
+  status: string;
+  location?: Location;
+  karma: number;
 
   hp: number;
   max_hp: number;
@@ -58,6 +62,9 @@ export const usePlayersStore = defineStore("players", () => {
         {
           id,
           name: "",
+          status: "",
+          location: undefined,
+          karma: 0,
           hp: 0,
           max_hp: 0,
           hp_speed: 0,
